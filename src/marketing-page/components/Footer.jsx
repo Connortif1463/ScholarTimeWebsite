@@ -16,8 +16,9 @@ function Copyright() {
   return (
     <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
       {'Copyright © '}
-      <Link color="text.secondary" href="https://mui.com/">
-        Sitemark
+      <Link color="text.secondary" href="https://github.com/Connortif1463"
+      target="_blank">
+        Connor Fischetti
       </Link>
       &nbsp;
       {new Date().getFullYear()}
@@ -46,7 +47,7 @@ export default function Footer() {
         }}
       >
         <div>
-          <Link color="text.secondary" variant="body2" href="#">
+          {/* <Link color="text.secondary" variant="body2" href="#">
             Privacy Policy
           </Link>
           <Typography sx={{ display: 'inline', mx: 0.5, opacity: 0.5 }}>
@@ -54,7 +55,7 @@ export default function Footer() {
           </Typography>
           <Link color="text.secondary" variant="body2" href="#">
             Terms of Service
-          </Link>
+          </Link> */}
           <Copyright />
         </div>
         <Stack
@@ -66,7 +67,8 @@ export default function Footer() {
           <IconButton
             color="inherit"
             size="small"
-            href="https://github.com/mui"
+            href="https://github.com/Connortif1463/ScholarTimeProject"
+            target="_blank"
             aria-label="GitHub"
             sx={{ alignSelf: 'center' }}
           >
@@ -75,7 +77,8 @@ export default function Footer() {
           <IconButton
             color="inherit"
             size="small"
-            href="https://www.linkedin.com/company/mui/"
+            href="https://www.linkedin.com/in/connor-fischetti-6120591aa/"
+            target="_blank"
             aria-label="LinkedIn"
             sx={{ alignSelf: 'center' }}
           >

@@ -123,7 +123,7 @@ export default function AppAppBar() {
       <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4, md: 6 } }}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <LogoContainer
+            {/* <LogoContainer
               ref={logoRef}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
@@ -143,10 +143,27 @@ export default function AppAppBar() {
                   transform: `translate(${-mousePosition.x * 0.4}px, ${-mousePosition.y * 0.4}px)`,
                 }}
               />
-            </LogoContainer>
+            </LogoContainer> */}
             
             <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-              <Button variant="text" color="info" size="small" >
+              <Button 
+                variant="text" 
+                color="info" 
+                size="small"
+                sx={{
+                  transition: 'color 0.3s ease',
+                  '&:hover': {
+                    color: '#DD5144', // Chrome red
+                    animation: 'chromeColors 2s infinite',
+                  },
+                  '@keyframes chromeColors': {
+                    '0%': { color: '#DD5144' }, // Red
+                    '33%': { color: '#FFCD46' }, // Yellow
+                    '66%': { color: '#1DA462' }, // Green
+                    '100%': { color: '#DD5144' }, // Back to red
+                  },
+                }}
+              >
                 Chrome Web Store
               </Button>
               <Button href="https://github.com/Connortif1463/ScholarTimeProject" 
@@ -154,13 +171,13 @@ export default function AppAppBar() {
               variant="text" color="info" size="small">
                 GitHub
               </Button>
-              <Button
+              {/* <Button
                 variant="text"
                 color="info"
                 size="small"
               >
                 FAQ
-              </Button>
+              </Button> */}
             </Box>
           </Box>
           <Box
