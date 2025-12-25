@@ -56,7 +56,7 @@ export default function LogoCollection() {
         sx={{ textAlign: 'center' }}
       >
         Clone our codebase from&nbsp;
-        <Link href="#" color="primary">
+        <Link href="https://github.com/Connortif1463/ScholarTimeProject" target="_blank" color="primary">
               here
         </Link>
         .

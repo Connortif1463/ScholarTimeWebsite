@@ -1,5 +1,7 @@
 import * as React from 'react';
+import { useState, useRef } from 'react';
 import { styled, alpha } from '@mui/material/styles';
+import { HashLink as Link } from 'react-router-hash-link';
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,7 +14,7 @@ import Drawer from '@mui/material/Drawer';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
-import Sitemark from './SitemarkIcon';
+import ScholarTimeClock from "../../assets/icons/convertico-ScholarTime_Logo/convertico-ScholarTime_Logo_128x128.png";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -30,12 +32,82 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: '8px 12px',
 }));
 
+const LogoContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  width: 40,
+  height: 40,
+  borderRadius: '50%',
+  overflow: 'hidden',
+  transition: 'transform 0.15s ease-out',
+  cursor: 'pointer',
+  marginRight: '12px',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: theme.palette.mode === 'light' 
+      ? 'radial-gradient(circle at center, hsla(210, 100%, 60%, 0.3) 0%, transparent 70%)'
+      : 'radial-gradient(circle at center, hsla(210, 100%, 30%, 0.4) 0%, transparent 70%)',
+    opacity: 0,
+    transition: 'opacity 0.3s ease-in-out',
+    zIndex: 0,
+    pointerEvents: 'none',
+  },
+  '&:hover::before': {
+    opacity: 1,
+  },
+  '& .logo-image': {
+    position: 'relative',
+    zIndex: 1,
+    transition: 'filter 0.3s ease-in-out, transform 0.15s ease-out',
+  },
+  '&:hover .logo-image': {
+    filter: 'brightness(1.1)',
+  },
+}));
+
 export default function AppAppBar() {
   const [open, setOpen] = React.useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const logoRef = useRef(null);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+
+  const handleMouseMove = (e) => {
+    if (!logoRef.current) return;
+    
+    const rect = logoRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    // Calculate distance from center (normalized -1 to 1)
+    const x = ((e.clientX - centerX) / (rect.width / 2)) * 0.4; // Increased intensity for more distance
+    const y = ((e.clientY - centerY) / (rect.height / 2)) * 0.4; // Increased intensity for more distance
+    
+    // Apply magnetic effect: move opposite to mouse direction with easing
+    const strength = 0.1;
+    const distance = Math.sqrt(x * x + y * y);
+    const easedStrength = strength * (1 - Math.exp(-distance * 2.5)); // Adjusted easing
+    
+    const moveX = -x * easedStrength * 100;
+    const moveY = -y * easedStrength * 100;
+    
+    setMousePosition({ x: moveX, y: moveY });
+  };
+
+  const handleMouseLeave = () => {
+    // Smoothly return to center
+    setMousePosition({ x: 0, y: 0 });
+  };
+
+  // Calculate scale based on mouse distance from center
+  const distance = Math.sqrt(mousePosition.x * mousePosition.x + mousePosition.y * mousePosition.y);
+  const scale = 1 + (distance / 400); // Increased scale effect
 
   return (
     <AppBar
@@ -48,28 +120,46 @@ export default function AppAppBar() {
         mt: 'calc(var(--template-frame-height, 0px) + 28px)',
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth={false} sx={{ px: { xs: 2, sm: 4, md: 6 } }}>
         <StyledToolbar variant="dense" disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', px: 0 }}>
-            <Sitemark />
-            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              <Button variant="text" color="info" size="small">
-                Features
+            <LogoContainer
+              ref={logoRef}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={handleMouseLeave}
+              sx={{
+                transform: `translate(${mousePosition.x}px, ${mousePosition.y}px) scale(${scale})`,
+              }}
+            >
+              <Box
+                component="img"
+                src={ScholarTimeClock}
+                alt="ScholarTime Clock"
+                className="logo-image"
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  transform: `translate(${-mousePosition.x * 0.4}px, ${-mousePosition.y * 0.4}px)`,
+                }}
+              />
+            </LogoContainer>
+            
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+              <Button variant="text" color="info" size="small" >
+                Chrome Web Store
               </Button>
-              <Button variant="text" color="info" size="small">
-                Testimonials
+              <Button href="https://github.com/Connortif1463/ScholarTimeProject" 
+              target="_blank"
+              variant="text" color="info" size="small">
+                GitHub
               </Button>
-              <Button variant="text" color="info" size="small">
-                Highlights
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+              >
                 FAQ
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                Blog
               </Button>
             </Box>
           </Box>
@@ -80,12 +170,6 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small">
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small">
-              Sign up
-            </Button>
             <ColorModeIconDropdown />
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
@@ -114,13 +198,7 @@ export default function AppAppBar() {
                     <CloseRoundedIcon />
                   </IconButton>
                 </Box>
-
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
                 <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
                   <Button color="primary" variant="contained" fullWidth>
